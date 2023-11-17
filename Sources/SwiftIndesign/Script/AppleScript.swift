@@ -35,17 +35,20 @@ class AppleScript {
         return script
     }
 
-    static func getSetLayerPropertiesScript(fileList: [String], layerIndexList: [Int], visibleList: [Bool], lockList: [Bool]) -> String {
+    static func getSetLayerPropertiesScript(fileList: [String], layerNameList: [String], visibleList: [Bool], lockList: [Bool], isContains: Bool) -> String {
         let fileListStr = fileList.map({"\"\($0)\""}).joined(separator: ",")
-        let layerIndexListStr = layerIndexList.map({String($0)}).joined(separator: ",")
+        let layerNameListStr = layerNameList.map({"\"\($0)\""}).joined(separator: ",")
         let visibleListStr = visibleList.map({String($0)}).joined(separator: ",")
         let lockListStr = lockList.map({String($0)}).joined(separator: ",")
+        var conditionStr = "if the name of ly is equal to item i of layerNameList then"
+        if isContains {
+            conditionStr = "if the name of ly contains item i of layerNameList then"
+        }
     let script = """
 use framework "Foundation"
 set fileList to {\(fileListStr)}
-set lockSettingTargetList to {\(layerIndexListStr)}
+set layerNameList to {\(layerNameListStr)}
 set lockSettingList to {\(lockListStr)}
-set visibleSettingTargetList to {\(layerIndexListStr)}
 set visibleSettingList to {\(visibleListStr)}
 
 tell application id "com.adobe.InDesign"
@@ -54,18 +57,16 @@ tell application id "com.adobe.InDesign"
     repeat with filePath in fileList
         set myDocument to open filePath
         set _layers to layers of myDocument
-        repeat with i from 1 to count lockSettingTargetList
-            set _layerIndex to item i of lockSettingTargetList
-            set _layer to the item (_layerIndex + 1) of _layers
-            set _lockValue to the item i of lockSettingList
-            set locked of _layer to _lockValue
-        end repeat
 
-        repeat with i from 1 to count visibleSettingTargetList
-            set _layerIndex to item i of visibleSettingTargetList
-            set _layer to the item (_layerIndex + 1) of _layers
-            set _visibleValue to the item i of visibleSettingList
-            set visible of _layer to _visibleValue
+        repeat with i from 1 to count layerNameList
+            repeat with ly in _layers
+                \(conditionStr)
+                    set _visibleValue to the item i of visibleSettingList
+                    set _lockValue to the item i of lockSettingList
+                    set locked of ly to _lockValue
+                    set visible of ly to _visibleValue
+                end if
+            end repeat
         end repeat
 
         save myDocument with force save
@@ -78,11 +79,10 @@ tell application id "com.adobe.InDesign"
 
         close myDocument
 
-
     end repeat
 end tell
 """
-//        print(script)
+        print(script)
         return script
     }
 }
