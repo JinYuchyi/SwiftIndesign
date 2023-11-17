@@ -68,11 +68,21 @@ tell application id "com.adobe.InDesign"
             set visible of _layer to _visibleValue
         end repeat
 
-        save myDocument
+        save myDocument with force save
+
+        set oldName to name of myDocument
+        set shortOldName to text 1 thru -6 of oldName
+        set oldPath to the file path of myDocument
+        set idmlPath to (oldPath as string) & shortOldName & ".idml"
+        export myDocument format InDesign markup to file idmlPath with force save
+
         close myDocument
+
+
     end repeat
 end tell
 """
+//        print(script)
         return script
     }
 }

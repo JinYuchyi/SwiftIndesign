@@ -79,14 +79,8 @@ class SwiftIndesign {
 
 
     static func setLayerProperties(fileList: [String], layerIndexList: [Int], visibleList: [Bool], lockList: [Bool] ) {
-//        let fileListStr = fileList.map({"\"\($0)\""}).joined(separator: ",")
-//        let layerIndexListStr = layerIndexList.map({String($0)}).joined(separator: ",")
-//        let visibleListStr = visibleList.map({String($0)}).joined(separator: ",")
-//        let lockListStr = lockList.map({String($0)}).joined(separator: ",")
         let script = AppleScript.getSetLayerPropertiesScript(fileList: fileList, layerIndexList: layerIndexList, visibleList: visibleList, lockList: lockList)
-        _ = try? ScriptUtils.runShell(command: script)
+        let result = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
     }
 
-    // Convert
-    
 }
