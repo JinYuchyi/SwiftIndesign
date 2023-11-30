@@ -35,7 +35,7 @@ public class Indesign {
                     } catch {
                         print("Error: failed in deleting \(idml).")
                     }
-                    let newIdml = InddUtils.convertToIdml(inddPath: inddPath)
+                    let newIdml = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil)
                     if newIdml == nil {
                         print("Error: Cannot generate \(idml) from \(inddPath).")
                         return nil
@@ -43,7 +43,7 @@ public class Indesign {
                 }
             }
         } else {
-            let newIdml = InddUtils.convertToIdml(inddPath: inddPath)
+            let newIdml = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil)
             if newIdml == nil {
                 print("Error: Cannot generate \(idml) from \(inddPath).")
                 return nil
@@ -91,6 +91,26 @@ public class Indesign {
         let script = AppleScript.getSetLayerPropertiesScript(fileList: fileList, layerNameList: targetLayerNameList, visibleList: visibleList, lockList: lockList, isContains: isContains)
         let result = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
         return result ?? ""
+    }
+
+    public static func inddToIdml(indd: String, targetPath: String) throws -> String {
+        var isDir: ObjCBool = false
+
+        var targetIdmlPath = targetPath
+        if FileManager.default.fileExists(atPath: targetPath, isDirectory: &isDir) {
+            if isDir.boolValue == true {
+                guard let inddName = indd.components(separatedBy: "/").last else {
+                    throw ("Cannot get file name from \(indd).")
+                }
+                targetIdmlPath = targetPath + "/" + inddName.replacingOccurrences(of: ".indd", with: ".idml")
+            } else {
+                if targetIdmlPath.hasSuffix("idml") == false {
+                    throw ("\(targetPath) is neither a idml file or a directory.")
+                }
+            }
+        }
+        let output = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetIdmlPath) ?? ""
+        return output
     }
 
 }

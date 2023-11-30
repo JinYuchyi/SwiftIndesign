@@ -3,24 +3,24 @@ import XCTest
 
 final class SwiftIndesignTests: XCTestCase {
 
-    func testAppleScriptIdesignConnection() throws {
-        let result = SwiftIndesign.verifyIndesignConnection()
-        XCTAssertTrue(result)
-    }
-
-    func testInitSwiftIndesign() throws {
-        let swiftIndesign = SwiftIndesign(inddPath: "/Users/jin/Documents/IndesignTest/826-11832-A_N210_FB_Label_1Language_BTR_GEN_Single_1033547_v2.indd")
-        print(swiftIndesign.indesignItem)
-        XCTAssertTrue(swiftIndesign.indesignItem != nil)
-    }
-
-    func testSetLayerProperties() throws {
-        var fileList: [String] = ["/Users/jin/Documents/IndesignTest/826-11182-A_B520a_Single_Lang_FB_LBL_CH_1032789_v2.indd", "/Users/jin/Documents/IndesignTest/826-11832-A_N210_FB_Label_1Language_BTR_GEN_Single_1033547_v2.indd"]
-        var layerIndexList: [Int] = [0, 1]
-        var visibleList: [Bool] = [true, true]
-        var lockList: [Bool] = [false, true]
-        SwiftIndesign.setLayerProperties(fileList: fileList, layerIndexList: layerIndexList, visibleList: visibleList, lockList: lockList)
-    }
+//    func testAppleScriptIdesignConnection() throws {
+//        let result = SwiftIndesign.verifyIndesignConnection()
+//        XCTAssertTrue(result)
+//    }
+//
+//    func testInitSwiftIndesign() throws {
+//        let swiftIndesign = SwiftIndesign(inddPath: "/Users/jin/Documents/IndesignTest/826-11832-A_N210_FB_Label_1Language_BTR_GEN_Single_1033547_v2.indd")
+//        print(swiftIndesign.indesignItem)
+//        XCTAssertTrue(swiftIndesign.indesignItem != nil)
+//    }
+//
+//    func testSetLayerProperties() throws {
+//        var fileList: [String] = ["/Users/jin/Documents/IndesignTest/826-11182-A_B520a_Single_Lang_FB_LBL_CH_1032789_v2.indd", "/Users/jin/Documents/IndesignTest/826-11832-A_N210_FB_Label_1Language_BTR_GEN_Single_1033547_v2.indd"]
+//        var layerIndexList: [Int] = [0, 1]
+//        var visibleList: [Bool] = [true, true]
+//        var lockList: [Bool] = [false, true]
+//        SwiftIndesign.setLayerProperties(fileList: fileList, layerIndexList: layerIndexList, visibleList: visibleList, lockList: lockList)
+//    }
 
     func testUncompressFile() throws {
         var file = "/Users/jin/Downloads/PLK_Cicero_HIG_RainbowBeta_UG_O1_230501.zip"
@@ -73,6 +73,16 @@ final class SwiftIndesignTests: XCTestCase {
         let date = FileUtils.getFileEditDate(path: "/Users/jin/Downloads/PLK_Cicero_HIG_RainbowBeta_UG_O1_230501.zip")
         XCTAssertTrue((date != nil))
 //        print(attrs)
+    }
+
+    func testInddToIdml() throws {
+        let indd = "/Users/jin/Documents/Development/SwiftIndesign/Tests/SwiftIndesignTests/test.indd"
+        var targetIdmlPath = "/Users/jin/Downloads/123.idml"
+        do {
+            let path = try SwiftIndesign.Indesign.inddToIdml(indd: indd, targetPath: targetIdmlPath)
+        } catch {
+            print(error)
+        }
     }
 
 

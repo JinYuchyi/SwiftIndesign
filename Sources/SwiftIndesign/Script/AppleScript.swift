@@ -20,18 +20,28 @@ class AppleScript {
     end tell
     """
 
-    static func saveToIdml(indd: String) -> String {
-        let script = """
+    static func saveToIdml(indd: String, targetIdmlPath: String?) -> String {
+
+        var script = """
     tell application id "com.adobe.InDesign"
         set myDoc to open "\(indd)"
         set oldName to name of myDoc
         set shortOldName to text 1 thru -6 of oldName
         set oldPath to the file path of myDoc
         set idmlPath to (oldPath as string) & shortOldName & ".idml"
-        export myDoc format InDesign markup to file idmlPath
-        close myDoc
+        tell myDoc to export format InDesign markup to idmlPath
+        close myDoc saving no
     end tell
     """
+        if targetIdmlPath != nil {
+            script = """
+        tell application id "com.adobe.InDesign"
+            set myDoc to open "\(indd)"
+                tell myDoc to export format InDesign markup to "\(targetIdmlPath!)"
+            close myDoc saving no
+        end tell
+        """
+        }
         return script
     }
 
