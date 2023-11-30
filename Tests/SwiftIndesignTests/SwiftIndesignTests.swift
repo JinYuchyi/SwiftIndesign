@@ -85,5 +85,14 @@ final class SwiftIndesignTests: XCTestCase {
         }
     }
 
+    func testSetAllLayers() throws {
+        let list = [
+            "/Users/jin/Downloads/untitled folder 18/1.indd",
+            "/Users/jin/Downloads/untitled folder 18/2.indd"
+        ]
+        let out = Indesign.setAllLayersPropertities(fileList: list, visible: false, lock: false)
+        print (out)
+    }
+
 
 }

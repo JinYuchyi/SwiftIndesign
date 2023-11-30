@@ -93,6 +93,12 @@ public class Indesign {
         return result ?? ""
     }
 
+    public static func setAllLayersPropertities(fileList: [String], visible: Bool, lock: Bool ) -> String {
+        let script = AppleScript.getSetForAllLayersScript(fileList: fileList, visible: visible, lock: lock)
+        let result = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
+        return result ?? ""
+    }
+
     public static func inddToIdml(indd: String, targetPath: String) throws -> String {
         var isDir: ObjCBool = false
 
