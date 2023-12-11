@@ -91,6 +91,7 @@ class AppleScript {
         if isContains {
             conditionStr = "if the name of ly contains item i of layerNameList then"
         }
+
     let script = """
 use framework "Foundation"
 set fileList to {\(fileListStr)}

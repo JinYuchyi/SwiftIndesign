@@ -88,7 +88,12 @@ public class Indesign {
 
 
     public static func setLayerProperties(fileList: [String], targetLayerNameList: [String], visibleList: [Bool], lockList: [Bool], isContains: Bool ) -> String {
-        let script = AppleScript.getSetLayerPropertiesScript(fileList: fileList, layerNameList: targetLayerNameList, visibleList: visibleList, lockList: lockList, isContains: isContains)
+        var script = ""
+        if targetLayerNameList.filter({$0.isEmpty == false}).count > 0 {
+            script = AppleScript.getSetLayerPropertiesScript(fileList: fileList, layerNameList: targetLayerNameList, visibleList: visibleList, lockList: lockList, isContains: isContains)
+        } else {
+            script = AppleScript.getSetForAllLayersScript(fileList: fileList, visible: visibleList[0], lock: lockList[0])
+        }
         let result = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
         return result ?? ""
     }
