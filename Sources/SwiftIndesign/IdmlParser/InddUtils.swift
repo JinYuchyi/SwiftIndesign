@@ -9,12 +9,14 @@ import Foundation
 
 class InddUtils {
     // If targetIdmlPath is nil, export to same path
-    static func convertToIdml(inddPath: String, targetIdmlPath: String?) {
-        if targetIdmlPath?.hasSuffix("idml") == false {
-            return
+    static func convertToIdml(inddPath: String, targetIdmlPath: String?, targetFolder: String?) {
+        if targetIdmlPath == nil && targetFolder == nil {
+
         }
-        let script = AppleScript.saveToIdml(indd: inddPath, targetIdmlPath: targetIdmlPath)
+        let script = AppleScript.saveToIdml(indd: inddPath, targetIdmlPath: targetIdmlPath, targetFolder: targetFolder)
         let _ = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
         return
     }
+
+
 }

@@ -35,11 +35,11 @@ public class Indesign {
                     } catch {
                         print("Error: failed in deleting \(idml).")
                     }
-                    let _ = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil)
+                    let _ = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil, targetFolder: nil)
                 }
             }
         } else {
-            let _ = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil)
+            let _ = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil, targetFolder: nil)
         }
 
         // decompress
@@ -102,17 +102,15 @@ public class Indesign {
         var targetIdmlPath = targetPath
         if FileManager.default.fileExists(atPath: targetPath, isDirectory: &isDir) {
             if isDir.boolValue == true {
-                guard let inddName = indd.components(separatedBy: "/").last else {
-                    throw ("Cannot get file name from \(indd).")
-                }
-                targetIdmlPath = targetPath + "/" + inddName.replacingOccurrences(of: ".indd", with: ".idml")
+                let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: nil, targetFolder: targetPath)
             } else {
-                if targetIdmlPath.hasSuffix("idml") == false {
-                    throw ("\(targetPath) is neither a idml file or a directory.")
+                if targetIdmlPath.hasSuffix("idml") == true {
+                    let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetPath, targetFolder: nil)
+                } else {
+                    throw ("The file path is not an idml path.")
                 }
             }
         }
-        let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetIdmlPath)  
         return targetIdmlPath
     }
 
