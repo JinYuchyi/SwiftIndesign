@@ -35,19 +35,11 @@ public class Indesign {
                     } catch {
                         print("Error: failed in deleting \(idml).")
                     }
-                    let newIdml = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil)
-                    if newIdml == nil {
-                        print("Error: Cannot generate \(idml) from \(inddPath).")
-                        return nil
-                    }
+                    let _ = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil)
                 }
             }
         } else {
-            let newIdml = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil)
-            if newIdml == nil {
-                print("Error: Cannot generate \(idml) from \(inddPath).")
-                return nil
-            }
+            let _ = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil)
         }
 
         // decompress
@@ -120,8 +112,8 @@ public class Indesign {
                 }
             }
         }
-        let output = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetIdmlPath) ?? ""
-        return output
+        let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetIdmlPath)  
+        return targetIdmlPath
     }
 
 }

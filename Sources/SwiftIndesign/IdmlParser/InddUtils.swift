@@ -8,17 +8,13 @@
 import Foundation
 
 class InddUtils {
-    static func convertToIdml(inddPath: String, targetIdmlPath: String?) -> String? {
+    // If targetIdmlPath is nil, export to same path
+    static func convertToIdml(inddPath: String, targetIdmlPath: String?) {
         if targetIdmlPath?.hasSuffix("idml") == false {
-            return nil
+            return
         }
         let script = AppleScript.saveToIdml(indd: inddPath, targetIdmlPath: targetIdmlPath)
-        let output = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
-        
-        let idml = inddPath.replacingOccurrences(of: ".indd", with: ".idml")
-        if FileManager.default.fileExists(atPath: idml) {
-            return idml
-        }
-        return nil
+        let _ = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
+        return
     }
 }
