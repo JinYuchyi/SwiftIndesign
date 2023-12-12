@@ -96,22 +96,22 @@ public class Indesign {
         return result ?? ""
     }
 
-    public static func inddToIdml(indd: String, targetPath: String) throws -> String {
+    public static func inddToIdml(indd: String, targetPath: String) throws {
         var isDir: ObjCBool = false
 
-        var targetIdmlPath = targetPath
         if FileManager.default.fileExists(atPath: targetPath, isDirectory: &isDir) {
             if isDir.boolValue == true {
                 let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: nil, targetFolder: targetPath)
             } else {
-                if targetIdmlPath.hasSuffix("idml") == true {
+                if targetPath.hasSuffix("idml") == true {
                     let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetPath, targetFolder: nil)
                 } else {
                     throw ("The file path is not an idml path.")
                 }
             }
+        } else {
+            try? FileManager.default.createDirectory(atPath: targetPath, withIntermediateDirectories: true)
         }
-        return targetIdmlPath
     }
 
 }
