@@ -98,20 +98,19 @@ public class Indesign {
 
     public static func inddToIdml(indd: String, targetPath: String) throws {
         var isDir: ObjCBool = false
-
-        if FileManager.default.fileExists(atPath: targetPath, isDirectory: &isDir) {
-            if isDir.boolValue == true {
-                let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: nil, targetFolder: targetPath)
-            } else {
-                if targetPath.hasSuffix("idml") == true {
-                    let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetPath, targetFolder: nil)
-                } else {
-                    throw ("The file path is not an idml path.")
-                }
+        if FileManager.default.fileExists(atPath: targetPath, isDirectory: &isDir) == false {
+            do {
+                try FileManager.default.createDirectory(atPath: targetPath, withIntermediateDirectories: true)
+            } catch {
+                throw error
             }
-        } else {
-            try? FileManager.default.createDirectory(atPath: targetPath, withIntermediateDirectories: true)
         }
+        if targetPath.hasSuffix("idml") == false {
+            let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: nil, targetFolder: targetPath)
+        } else {
+            let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetPath, targetFolder: nil)
+        }
+
     }
 
 }
