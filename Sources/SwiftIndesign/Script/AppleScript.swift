@@ -50,8 +50,8 @@ class AppleScript {
         let script = """
     use framework "Foundation"
     set fileList to {\(fileListStr)}
-    set _lockValue to \(String(visible))
-    set _visibleValue to \(String(lock))
+    set _lockValue to \(String(lock))
+    set _visibleValue to \(String(visible))
 
     tell application id "com.adobe.InDesign"
         set user interaction level of script preferences to never interact
