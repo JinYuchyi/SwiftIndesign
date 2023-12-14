@@ -96,21 +96,15 @@ public class Indesign {
         return result ?? ""
     }
 
-    public static func inddToIdml(indd: String, targetPath: String) throws {
-        var isDir: ObjCBool = false
-        if FileManager.default.fileExists(atPath: targetPath, isDirectory: &isDir) == false {
-            do {
-                try FileManager.default.createDirectory(atPath: targetPath, withIntermediateDirectories: true)
-            } catch {
-                throw error
-            }
-        }
-        if targetPath.hasSuffix("idml") == false {
-            let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: nil, targetFolder: targetPath)
-        } else {
-            let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetPath, targetFolder: nil)
-        }
-
+	public static func inddToIdml(indd: String, targetPath: String, isFolder: Bool) throws {
+		if isFolder {
+			if FileManager.default.fileExists(atPath: targetPath) == false {
+				try FileManager.default.createDirectory(at: URL(fileURLWithPath: targetPath), withIntermediateDirectories: true)
+			}
+			let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: nil, targetFolder: targetPath)
+		} else {
+			let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetPath, targetFolder: nil)
+		}
     }
 
 }
