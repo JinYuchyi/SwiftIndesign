@@ -35,19 +35,11 @@ public class Indesign {
                     } catch {
                         print("Error: failed in deleting \(idml).")
                     }
-                    let newIdml = InddUtils.convertToIdml(inddPath: inddPath)
-                    if newIdml == nil {
-                        print("Error: Cannot generate \(idml) from \(inddPath).")
-                        return nil
-                    }
+                    let _ = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil, targetFolder: nil)
                 }
             }
         } else {
-            let newIdml = InddUtils.convertToIdml(inddPath: inddPath)
-            if newIdml == nil {
-                print("Error: Cannot generate \(idml) from \(inddPath).")
-                return nil
-            }
+            let _ = InddUtils.convertToIdml(inddPath: inddPath, targetIdmlPath: nil, targetFolder: nil)
         }
 
         // decompress
@@ -88,9 +80,37 @@ public class Indesign {
 
 
     public static func setLayerProperties(fileList: [String], targetLayerNameList: [String], visibleList: [Bool], lockList: [Bool], isContains: Bool ) -> String {
-        let script = AppleScript.getSetLayerPropertiesScript(fileList: fileList, layerNameList: targetLayerNameList, visibleList: visibleList, lockList: lockList, isContains: isContains)
+        var script = ""
+        if targetLayerNameList.filter({$0.isEmpty == false}).count > 0 {
+            script = AppleScript.getSetLayerPropertiesScript(fileList: fileList, layerNameList: targetLayerNameList, visibleList: visibleList, lockList: lockList, isContains: isContains)
+        } else {
+            script = AppleScript.getSetForAllLayersScript(fileList: fileList, visible: visibleList[0], lock: lockList[0])
+        }
         let result = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
         return result ?? ""
+    }
+
+    public static func setAllLayersPropertities(fileList: [String], visible: Bool, lock: Bool ) -> String {
+        let script = AppleScript.getSetForAllLayersScript(fileList: fileList, visible: visible, lock: lock)
+        let result = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
+        return result ?? ""
+    }
+
+    public static func inddToIdml(indd: String, targetPath: String) throws {
+        var isDir: ObjCBool = false
+        if FileManager.default.fileExists(atPath: targetPath, isDirectory: &isDir) == false {
+            do {
+                try FileManager.default.createDirectory(atPath: targetPath, withIntermediateDirectories: true)
+            } catch {
+                throw error
+            }
+        }
+        if targetPath.hasSuffix("idml") == false {
+            let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: nil, targetFolder: targetPath)
+        } else {
+            let _ = InddUtils.convertToIdml(inddPath: indd, targetIdmlPath: targetPath, targetFolder: nil)
+        }
+
     }
 
 }

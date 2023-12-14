@@ -8,14 +8,15 @@
 import Foundation
 
 class InddUtils {
-    static func convertToIdml(inddPath: String) -> String? {
-        let script = AppleScript.saveToIdml(indd: inddPath)
-        let output = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
+    // If targetIdmlPath is nil, export to same path
+    static func convertToIdml(inddPath: String, targetIdmlPath: String?, targetFolder: String?) {
+        if targetIdmlPath == nil && targetFolder == nil {
 
-        let idml = inddPath.replacingOccurrences(of: ".indd", with: ".idml")
-        if FileManager.default.fileExists(atPath: idml) {
-            return idml
         }
-        return nil
+        let script = AppleScript.saveToIdml(indd: inddPath, targetIdmlPath: targetIdmlPath, targetFolder: targetFolder)
+        let _ = try? ScriptUtils.runShell(command: "osascript -e '\(script)'")
+        return
     }
+
+
 }

@@ -20,19 +20,80 @@ class AppleScript {
     end tell
     """
 
-    static func saveToIdml(indd: String) -> String {
+    static func saveToIdml(indd: String, targetIdmlPath: String?, targetFolder: String?) -> String {
+        var script = ""
+        if targetIdmlPath == nil && targetFolder == nil {
+            script = """
+            tell application id "com.adobe.InDesign"
+                set myDoc to open "\(indd)"
+                set oldName to name of myDoc
+                set shortOldName to text 1 thru -6 of oldName
+                set oldPath to the file path of myDoc
+                set idmlPath to (oldPath as string) & shortOldName & ".idml"
+                tell myDoc to export format InDesign markup to idmlPath
+                close myDoc saving no
+            end tell
+            """
+        }
+        else if targetIdmlPath != nil {
+            script = """
+            tell application id "com.adobe.InDesign"
+                set myDoc to open "\(indd)"
+                    tell myDoc to export format InDesign markup to "\(targetIdmlPath!)"
+                close myDoc saving no
+            end tell
+            """
+        } else if targetIdmlPath == nil && targetFolder != nil {
+            script = """
+            tell application id "com.adobe.InDesign"
+                set myDoc to open "\(indd)"
+                set oldName to name of myDoc
+                set shortOldName to text 1 thru -6 of oldName
+                set oldPath to the file path of myDoc
+                set idmlPath to "\(targetFolder!)" & shortOldName & ".idml"
+                tell myDoc to export format InDesign markup to idmlPath
+                close myDoc saving no
+            end tell
+            """
+        }
+        return script
+    }
+
+    static func getSetForAllLayersScript(fileList: [String], visible: Bool, lock: Bool) -> String {
+        let fileListStr = fileList.map({"\"\($0)\""}).joined(separator: ",")
         let script = """
+    use framework "Foundation"
+    set fileList to {\(fileListStr)}
+    set _lockValue to \(String(lock))
+    set _visibleValue to \(String(visible))
+
     tell application id "com.adobe.InDesign"
-        set myDoc to open "\(indd)"
-        set oldName to name of myDoc
-        set shortOldName to text 1 thru -6 of oldName
-        set oldPath to the file path of myDoc
-        set idmlPath to (oldPath as string) & shortOldName & ".idml"
-        export myDoc format InDesign markup to file idmlPath
-        close myDoc
+        set user interaction level of script preferences to never interact
+        activate
+        repeat with filePath in fileList
+            set myDocument to open filePath
+            set _layers to layers of myDocument
+
+            repeat with ly in _layers
+                    set locked of ly to _lockValue
+                    set visible of ly to _visibleValue
+            end repeat
+
+            save myDocument to filePath
+
+            set oldName to name of myDocument
+            set shortOldName to text 1 thru -6 of oldName
+            set oldPath to the file path of myDocument
+            set idmlPath to (oldPath as string) & shortOldName & ".idml"
+            export myDocument format InDesign markup to file idmlPath with force save
+
+            close myDocument
+
+        end repeat
     end tell
     """
-        return script
+//            print(script)
+            return script
     }
 
     static func getSetLayerPropertiesScript(fileList: [String], layerNameList: [String], visibleList: [Bool], lockList: [Bool], isContains: Bool) -> String {
@@ -44,6 +105,7 @@ class AppleScript {
         if isContains {
             conditionStr = "if the name of ly contains item i of layerNameList then"
         }
+
     let script = """
 use framework "Foundation"
 set fileList to {\(fileListStr)}
@@ -82,7 +144,7 @@ tell application id "com.adobe.InDesign"
     end repeat
 end tell
 """
-        print(script)
+//        print(script)
         return script
     }
 }
