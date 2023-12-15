@@ -54,7 +54,7 @@ class AppleScript {
                 set oldName to name of myDoc
                 set shortOldName to text 1 thru -6 of oldName
                 set oldPath to the file path of myDoc
-                set idmlPath to "\(targetFolder!)" & shortOldName & ".idml"
+                set idmlPath to "\(_targetFolder)" & shortOldName & ".idml"
                 tell myDoc to export format InDesign markup to idmlPath
                 close myDoc saving no
             end tell

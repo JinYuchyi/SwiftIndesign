@@ -79,7 +79,7 @@ final class SwiftIndesignTests: XCTestCase {
         let indd = "/Users/jin/Documents/Development/SwiftIndesign/Tests/SwiftIndesignTests/test.indd"
         var targetIdmlPath = "/Users/jin/Downloads/123.idml"
         do {
-            let path = try SwiftIndesign.Indesign.inddToIdml(indd: indd, targetPath: targetIdmlPath)
+            let path = try SwiftIndesign.Indesign.inddToIdml(indd: indd, targetPath: targetIdmlPath, isFolder: false)
         } catch {
             print(error)
         }
