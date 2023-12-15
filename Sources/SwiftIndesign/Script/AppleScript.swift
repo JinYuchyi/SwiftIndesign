@@ -44,6 +44,10 @@ class AppleScript {
             end tell
             """
         } else if targetIdmlPath == nil && targetFolder != nil {
+            var _targetFolder = targetFolder!
+            if _targetFolder.last != "/" {
+                _targetFolder = _targetFolder + "/"
+            }
             script = """
             tell application id "com.adobe.InDesign"
                 set myDoc to open "\(indd)"
