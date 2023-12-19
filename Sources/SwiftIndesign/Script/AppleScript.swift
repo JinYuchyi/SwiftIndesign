@@ -135,7 +135,7 @@ tell application id "com.adobe.InDesign"
             end repeat
         end repeat
 
-        save myDocument to filePath
+        save myDocument to filePath with force save
 
         set oldName to name of myDocument
         set shortOldName to text 1 thru -6 of oldName
